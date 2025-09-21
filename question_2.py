@@ -86,28 +86,36 @@ def rand_prob():
 
 def rand_neighbor(coordinate, step_size, function):
     """
-    Generates and returns neighbor coordinates by moving randomly 
-    within step_size around current point
-
-    Input parameters:
-    coordinate : Current (x, y) -> tuple
-    step_size : Maximum step size in each direction
-    function : The objective function, used to get the domain
-
+    Generates and returns neighbor coordinates by moving exactly 
+    ±step_size in x and/or y (no random range).
+    
+    Input:
+    coordinate : Current (x, y) tuple
+    step_size  : Fixed step size for moves
+    function   : The objective function, used to get the domain
+    
     Returns:
-    (x_new, y_new) : New coordinate clamped to domain -> tuple
+    (x_new, y_new) : New neighbor coordinate (clamped to domain)
     """
-    x, y = coordinate # Current coordinates/point
+    x, y = coordinate
     min_x, max_x, min_y, max_y = get_domain(function)
 
-    x_new = x + random.uniform(-step_size, step_size)
-    y_new = y + random.uniform(-step_size, step_size)
+    # 8 possible moves 
+    moves = [
+        ( step_size, 0), (-step_size, 0),   # x only
+        (0, step_size), (0, -step_size),   # y only
+        ( step_size, step_size), ( step_size, -step_size),  # diagonals
+        (-step_size, step_size), (-step_size, -step_size)   # diagonals
+    ]
 
-    # Clamp values to domain in case points go beyond the given domain
+    dx, dy = random.choice(moves)
+    x_new = x + dx
+    y_new = y + dy
+
+    # Clamp to domain
     x_new = max(min(x_new, max_x), min_x)
     y_new = max(min(y_new, max_y), min_y)
-    # print(f"Clamped values,{x_new},{y_new}")
-    # print(f"Neighbors of current: {x}, {y}, are: {x_new}, {y_new}\n")
+    # print(f"Neighbors of({x},{y})are({x_new},{y_new}) with dx = {dx}, dy = {dy}")
     return (x_new, y_new)
 
 def sphere(coordinate):
