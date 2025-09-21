@@ -4,9 +4,7 @@ from sand import SandProblem
 from route import RoutePlanningProblem
 import util
 
-# --------------------------
-# A* Search
-# --------------------------
+
 def aStarSearch(problem, stats=False):
     start_state = problem.getStartState()
     frontier = util.PriorityQueue()
@@ -36,9 +34,7 @@ def aStarSearch(problem, stats=False):
         return [], 0, nodes_expanded
     return []
 
-# --------------------------
-# Dijkstra Search
-# --------------------------
+
 def dijkstraSearch(problem, stats=False):
     start_state = problem.getStartState()
     frontier = util.PriorityQueue()

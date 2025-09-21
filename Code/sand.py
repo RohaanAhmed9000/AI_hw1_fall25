@@ -3,9 +3,6 @@ from typing import List, Tuple, Any
 import util
 
 def aStarSearch(problem):
-    """
-    Search the node that has the lowest combined cost and heuristic.
-    """
     start_state = problem.getStartState()
     frontier = util.PriorityQueue()
     frontier.push((start_state, [], 0), 0)  # (state, path, cost), priority
@@ -121,8 +118,9 @@ class SandProblem(sp):
          THis function returns the heuristic of current state of the agent which will be the 
          estimated distance from goal.
         """
-        return min(abs(state[0] - self.z), abs(state[1] - self.z)) / max(self.x, self.y)
-    
+        return min(min(abs(state[0] - self.z), abs(state[1] - self.z)) / (self.x), min(abs(state[0] - self.z), abs(state[1] - self.z)) / (self.y))
+        #an optimistic heuristic that takes the mininmum of the ways to directly achieve the minimum difference to the goal state
+
 
 if __name__ == "__main__":
     # Example values for X, Y, Z

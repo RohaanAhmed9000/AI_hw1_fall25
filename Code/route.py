@@ -4,9 +4,6 @@ import util
 
 
 def aStarSearch(problem):
-    """
-    Search the node that has the lowest combined cost and heuristic.
-    """
     start_state = problem.getStartState()
     frontier = util.PriorityQueue()
     frontier.push((start_state, [], 0), 0)  # (state, path, cost), priority
