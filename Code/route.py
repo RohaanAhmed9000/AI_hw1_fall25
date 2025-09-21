@@ -2,6 +2,61 @@ from search import SearchProblem as sp
 import csv
 import util
 
+
+def aStarSearch(problem):
+    """
+    Search the node that has the lowest combined cost and heuristic.
+    """
+    start_state = problem.getStartState()
+    frontier = util.PriorityQueue()
+    frontier.push((start_state, [], 0), 0)  # (state, path, cost), priority
+    explored = set()
+
+    while not frontier.isEmpty():
+        state, path, cost = frontier.pop()
+
+        if problem.isGoalState(state):
+            return path
+
+        if state not in explored:
+            explored.add(state)
+
+            for successor, action, stepCost in problem.getSuccessors(state):
+                new_cost = cost + stepCost
+                heuristic = problem.getHeuristic(successor)
+                priority = new_cost + heuristic
+                frontier.push((successor, path + [action], new_cost), priority)
+
+    return []  # if no path found
+
+
+def dijkstraSearch(problem):
+    """
+    Dijkstra's Algorithm (Uniform Cost Search).
+    Expands the node with the lowest path cost g(n).
+    """
+    start_state = problem.getStartState()
+    frontier = util.PriorityQueue()
+    frontier.push((start_state, [], 0), 0)  # (state, path, cost), priority
+    explored = set()
+
+    while not frontier.isEmpty():
+        state, path, cost = frontier.pop()
+
+        if problem.isGoalState(state):
+            return path
+
+        if state not in explored:
+            explored.add(state)
+
+            for successor, action, stepCost in problem.getSuccessors(state):
+                new_cost = cost + stepCost
+                frontier.push((successor, path + [action], new_cost), new_cost)
+
+    return []  # No solution found
+
+
+
 class RoutePlanningProblem(sp):
     def __init__(self, start_city, goal_city, connection_file, heuristic_file, tracktype_file):
         self.start = start_city
@@ -67,3 +122,33 @@ class RoutePlanningProblem(sp):
 
     def getHeuristic(self, state):
         return self.heuristics[state][self.goal]
+
+
+if __name__ == "__main__":
+    # Example: test RoutePlanningProblem with given CSVs
+    start_city = "Islamabad"
+    goal_city = "Hunza"
+
+    connection_file = "./CSV/Connections.csv"
+    heuristic_file = "./CSV/Heuristics.csv"
+    tracktype_file = "./CSV/TrackType.csv"
+
+    # Create problem instance
+    problem = RoutePlanningProblem(start_city, goal_city,
+                                   connection_file, heuristic_file, tracktype_file)
+
+    print("=== Route Planning with A* Search ===")
+    print(f"Start city: {start_city}")
+    print(f"Goal city: {goal_city}\n")
+
+    # Run A* Search
+    solution = aStarSearch(problem)
+
+    if solution:
+        print("Optimal route found:")
+        for step in solution:
+            print("  ", step)
+        print(f"\nTotal steps: {len(solution)}")
+    else:
+        print("No route found between the given cities.")
+
